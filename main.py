@@ -1,10 +1,13 @@
 import discord
 from discord.ext import commands
 
+from logger import initialize_log_file, log_message
+
 from dotenv import load_dotenv
 import os
-
 import random
+import json
+from datetime import datetime
 
 load_dotenv()
 
@@ -17,11 +20,21 @@ async def on_ready():
     await client.tree.sync()
     print("bot is ready")
 
-@client.tree.command(name = "test", description = "test est test")
-async def test(interaction):
-    await interaction.response.send_message("test successfull ✅")
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+    
+    username = str(message.author)
+    content = message.content
+    time = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
 
-@client.command()
+    log_message(username, content, time)
+    print(f'Logged message from {username} at {time}: {content}')
+
+# Initialize the log file
+initialize_log_file()
+
 async def ping(ctx):
     latency = round(client.latency * 1000)
 
@@ -72,8 +85,3 @@ async def math(ctx, num1, operator, num2):
 
 client.run(token)
 
-
-# @client.event
-# async def on_message(message):
-#     if message.content == "hello".lower():
-#         await message.channel.send("as salam walikum")
