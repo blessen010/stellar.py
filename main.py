@@ -14,7 +14,12 @@ client = commands.Bot(command_prefix = "s!", intents = discord.Intents.all())
 
 @client.event
 async def on_ready():
+    await client.tree.sync()
     print("bot is ready")
+
+@client.tree.command(name = "test", description = "test est test")
+async def test(interaction):
+    await interaction.response.send_message("test successfull ✅")
 
 @client.command()
 async def ping(ctx):
@@ -63,6 +68,7 @@ async def math(ctx, num1, operator, num2):
                        \n**Subtraction**: **-**
                        \n**Multiplication**: **x**
                        \n**Divison**: **/**""")
+
 
 client.run(token)
 
